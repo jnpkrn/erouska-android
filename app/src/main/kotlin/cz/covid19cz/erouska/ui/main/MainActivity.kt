@@ -23,6 +23,7 @@ import cz.covid19cz.erouska.service.CovidService
 import cz.covid19cz.erouska.ui.base.BaseActivity
 import cz.covid19cz.erouska.utils.CustomTabHelper
 import kotlinx.android.synthetic.main.activity_main.*
+import net.danlew.android.joda.JodaTimeAndroid
 import org.koin.android.ext.android.inject
 
 
@@ -66,6 +67,8 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
         registerServiceStateReceivers()
+
+        JodaTimeAndroid.init(this);
 
         findNavController(R.id.nav_host_fragment).let {
             bottom_navigation.setOnNavigationItemSelectedListener { item ->

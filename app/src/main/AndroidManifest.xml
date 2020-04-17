@@ -83,6 +83,13 @@
         <receiver android:name=".receiver.BluetoothStateReceiver" />
         <receiver android:name=".receiver.LocationStateReceiver" />
 
+        <receiver android:name=".jobs.AutoRestartJob">
+            <intent-filter>
+                <action android:name="EROUSKA_ALARM" />
+                <data android:scheme="erouska" />
+            </intent-filter>
+        </receiver>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification_normal" />
