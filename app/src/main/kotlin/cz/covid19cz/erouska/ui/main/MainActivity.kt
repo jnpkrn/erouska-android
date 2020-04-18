@@ -14,6 +14,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.jakewharton.threetenabp.AndroidThreeTen
 import cz.covid19cz.erouska.R
 import cz.covid19cz.erouska.bt.BluetoothRepository
 import cz.covid19cz.erouska.databinding.ActivityMainBinding
@@ -23,7 +24,6 @@ import cz.covid19cz.erouska.service.CovidService
 import cz.covid19cz.erouska.ui.base.BaseActivity
 import cz.covid19cz.erouska.utils.CustomTabHelper
 import kotlinx.android.synthetic.main.activity_main.*
-import net.danlew.android.joda.JodaTimeAndroid
 import org.koin.android.ext.android.inject
 
 
@@ -68,7 +68,7 @@ class MainActivity :
         setSupportActionBar(toolbar)
         registerServiceStateReceivers()
 
-        JodaTimeAndroid.init(this);
+        AndroidThreeTen.init(this);
 
         findNavController(R.id.nav_host_fragment).let {
             bottom_navigation.setOnNavigationItemSelectedListener { item ->

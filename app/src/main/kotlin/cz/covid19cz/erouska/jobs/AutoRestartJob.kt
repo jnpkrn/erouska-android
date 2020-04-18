@@ -10,7 +10,7 @@ import android.os.Handler
 import cz.covid19cz.erouska.BuildConfig
 import cz.covid19cz.erouska.service.CovidService
 import cz.covid19cz.erouska.utils.L
-import org.joda.time.DateTime
+import org.threeten.bp.ZonedDateTime
 
 class AutoRestartJob : BroadcastReceiver() {
 
@@ -65,12 +65,13 @@ class AutoRestartJob : BroadcastReceiver() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val first = DateTime.now().plusDays(1).withHourOfDay(2).withMinuteOfHour(0)
+        val first = ZonedDateTime.now().plusDays(1).withHour(2).withMinute(0)
+
         L.d("Planning auto-restart with interval $INTERVAL millis, first: $first")
 
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
-            first.millis,
+            first.toInstant().toEpochMilli(),
             INTERVAL,
             pendingIntent
         )
