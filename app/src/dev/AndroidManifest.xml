@@ -17,13 +17,6 @@
                 <action android:name="cz.covid19cz.erouska.dev.EROUSKA_RESUME" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name=".jobs.AutoRestartJob">
-            <intent-filter>
-                <action android:name="EROUSKA_ALARM" />
-                <data android:scheme="erouska-dev" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

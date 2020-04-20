@@ -14,7 +14,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.jakewharton.threetenabp.AndroidThreeTen
 import cz.covid19cz.erouska.R
 import cz.covid19cz.erouska.bt.BluetoothRepository
 import cz.covid19cz.erouska.databinding.ActivityMainBinding
@@ -67,8 +66,6 @@ class MainActivity :
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
         registerServiceStateReceivers()
-
-        AndroidThreeTen.init(this);
 
         findNavController(R.id.nav_host_fragment).let {
             bottom_navigation.setOnNavigationItemSelectedListener { item ->

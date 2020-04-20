@@ -20,6 +20,7 @@ import cz.covid19cz.erouska.ext.batterySaverRestrictsLocation
 import cz.covid19cz.erouska.ext.execute
 import cz.covid19cz.erouska.ext.isLocationEnabled
 import cz.covid19cz.erouska.jobs.AutoRestartJob
+import cz.covid19cz.erouska.receiver.AutoRestartReceiver
 import cz.covid19cz.erouska.receiver.BatterSaverStateReceiver
 import cz.covid19cz.erouska.receiver.BluetoothStateReceiver
 import cz.covid19cz.erouska.receiver.LocationStateReceiver
@@ -165,7 +166,7 @@ class CovidService : Service() {
         resume()
         wakeLockManager.acquire()
 
-        if (intent?.getBooleanExtra(AutoRestartJob.EXTRAKEY_START, true) == true) {
+        if (intent?.getBooleanExtra(AutoRestartReceiver.EXTRAKEY_START, true) == true) {
             autoRestartJob.setUp(this, alarmManager)
         }
     }
@@ -183,8 +184,8 @@ class CovidService : Service() {
         servicePaused = true
         updateAppShortcuts()
 
-        if (intent.getBooleanExtra(AutoRestartJob.EXTRAKEY_CANCEL, true)) {
-            autoRestartJob.cancel(alarmManager)
+        if (intent.getBooleanExtra(AutoRestartReceiver.EXTRAKEY_CANCEL, true)) {
+            autoRestartJob.cancel()
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

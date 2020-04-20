@@ -83,10 +83,10 @@
         <receiver android:name=".receiver.BluetoothStateReceiver" />
         <receiver android:name=".receiver.LocationStateReceiver" />
 
-        <receiver android:name=".jobs.AutoRestartJob">
+        <receiver android:name=".receiver.AutoRestartReceiver">
             <intent-filter>
-                <action android:name="EROUSKA_ALARM" />
-                <data android:scheme="erouska" />
+                <action android:name="android.intent.action.RUN" />
+                <data android:scheme="@string/uri_scheme" android:path="restart" />
             </intent-filter>
         </receiver>
 

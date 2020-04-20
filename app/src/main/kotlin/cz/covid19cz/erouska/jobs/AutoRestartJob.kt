@@ -1,84 +1,52 @@
 package cz.covid19cz.erouska.jobs
 
 import android.app.AlarmManager
+import android.app.AlarmManager.INTERVAL_DAY
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Handler
-import cz.covid19cz.erouska.BuildConfig
-import cz.covid19cz.erouska.service.CovidService
+import cz.covid19cz.erouska.R
+import cz.covid19cz.erouska.receiver.AutoRestartReceiver
 import cz.covid19cz.erouska.utils.L
 import org.threeten.bp.ZonedDateTime
 
-class AutoRestartJob : BroadcastReceiver() {
-
-    companion object {
-        const val EXTRAKEY_START = "AUTO_RESTART_START"
-        const val EXTRAKEY_CANCEL = "AUTO_RESTART_CANCEL"
-
-        private const val ACTION = "EROUSKA_ALARM"
-
-        private val SCHEME = "erouska" + if (BuildConfig.FLAVOR == "dev") "-dev" else ""
-        private val URI = Uri.parse("$SCHEME://auto-restart")
-
-        const val INTERVAL = 24 * 60 * 60 * 1000L // 24 hours
-    }
-
-    override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action == ACTION && intent.data == URI) {
-            context?.let { ctx ->
-                // do this stuff only when service is running!
-                //
-                // if it's not running, it should actually not eve get here, however, it's better to
-                // check it to avoid possible problems like:
-                // `Unable to start receiver  java.lang.IllegalStateException: Not allowed to start service`
-                if (CovidService.isRunning(ctx)) {
-                    L.d("Auto-restart of service - stopping")
-                    ctx.startService(
-                        CovidService.stopService(ctx).putExtra(EXTRAKEY_CANCEL, false)
-                    )
-
-                    Handler().postDelayed({
-                        L.d("Auto-restart of service - starting")
-                        ctx.startService(
-                            CovidService.startService(ctx).putExtra(EXTRAKEY_START, false)
-                        )
-                    }, 2000);
-                }
-            }
-        }
-    }
+class AutoRestartJob {
 
     private var pendingIntent: PendingIntent? = null
+    private var alarmManager: AlarmManager? = null
 
     fun setUp(context: Context, alarmManager: AlarmManager) {
-        val intent = Intent(context, AutoRestartJob::class.java)
-            .setAction(ACTION)
-            .setData(URI)
+        val uri =
+            Uri.parse("${context.getString(R.string.uri_scheme)}://${AutoRestartReceiver.URI_PATH}")
+
+        val intent = Intent(context, AutoRestartReceiver::class.java)
+            .setAction(Intent.ACTION_RUN)
+            .setData(uri)
 
         pendingIntent = PendingIntent.getBroadcast(
             context,
-            123,
+            AutoRestartReceiver.REQUEST_CODE,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
+        this.alarmManager = alarmManager
+
         val first = ZonedDateTime.now().plusDays(1).withHour(2).withMinute(0)
 
-        L.d("Planning auto-restart with interval $INTERVAL millis, first: $first")
+        L.d("Planning auto-restart with interval 24h, first: $first")
 
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             first.toInstant().toEpochMilli(),
-            INTERVAL,
+            INTERVAL_DAY,
             pendingIntent
         )
     }
 
-    fun cancel(alarmManager: AlarmManager) {
+    fun cancel() {
         L.d("Cancelling auto-restart")
-        pendingIntent?.let { alarmManager.cancel(it) }
+        pendingIntent?.let { alarmManager?.cancel(it) }
     }
 }
